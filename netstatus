@@ -12,4 +12,14 @@ function getNetworkStatus () {
   [[ -n $(ping $remoteIP -c 1 -W 1 | grep '100%') ]] && printf "${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: $netName is offline. ]$normal" || printf "${green}⬢${normal} ${background}[ Liberty Prime: ${green}ONLINE${normal}${background} - Voice Module: ${green}ACTIVE${normal}${background} - Weapons: ${red}HOT${normal}${background} ]$normal"
 }
 
+# This one has my own systemd integration
+# function getNetworkStatus () {
+#   [[ -n $(ping $remoteIP -c 1 -W 1 | grep '100%') ]] && network_down=true
+#   if [[ $network_down ]]; then
+#           printf "${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: $netName is offline - $(sudo service devops-server status | sed -n \$p) ]$normal" 
+#   else
+#     printf "${green}⬢${normal} ${background}[ Liberty Prime: ${green}ONLINE${normal}${background} - Voice Module: ${green}ACTIVE${normal}${background} - Weapons: ${red}HOT${normal}${background} ]$normal"
+#   fi
+# }
+
 getNetworkStatus
