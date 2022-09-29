@@ -1,25 +1,26 @@
 #!/usr/bin/env bash
 
-remoteAddr=devops.us.priv.hyperspire.net
-netName=HyperNet
+remoteAddr="secure.us.hyperspire.net" # Example
+netName="HyperNet"
 
 red='\e[31m\e[1m'
 green='\e[32m\e[1m'
 background='\e[40m'
 normal='\e[0m'
+statusLength=28
 
-# function getNetworkStatus () {
-#   [[ -n $(ping $remoteAddr -c 1 -W 1 | grep '100%') ]] && printf "${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: $netName is offline. ]$normal" || printf "${green}⬢${normal} ${background}[ Liberty Prime: ${green}ONLINE${normal}${background} - Voice Module: ${green}ACTIVE${normal}${background} - Weapons: ${red}HOT${normal}${background} ]$normal"
-# }
-
-# This one has some internal systemd integration
-function getNetworkStatus () {
-  [[ -n $(ping $remoteAddr -c 1 -W 1 | grep '100%') ]] && network_down=true
-  if [[ $network_down ]]; then
-          printf "${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: $netName is offline - $(sudo service devops-server status 2> /dev/null | sed -n \$p) ]$normal"
+function getNetworkStatus { # Example using devopsctl.service
+  [[ 1 == $(ping -c 1 -W 1 "${remoteAddr}" | grep -c '100%') ]] && networkDown=true
+  if [[ true == "${networkDown}" ]]; then
+    echo -e " ${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: ${netName} is offline ⥈ $(sudo service devopsctl.service status 2>/dev/null | tail -n 1 | tail -c ${statusLength}) ]${normal}\n"
+    return 1
   else
-    printf "${green}⬢${normal} ${background}[ Liberty Prime: ${green}ONLINE${normal}${background} - Voice Module: ${green}ACTIVE${normal}${background} - Weapons: ${red}HOT${normal}${background} ]$normal"
+    [[ 1 == $(nmap --host-timeout 1 -Pn "${remoteAddr}" -p 8080 2>/dev/null | grep -c 'open') ]] && export proxy_all="${remoteAddr}"
+    ( cp -f "${HOME}/src/known_hosts" "${HOME}/.ssh/known_hosts" &>/dev/null )
+    ( ssh finger@${remoteAddr} &>/dev/null )
+    echo -e " ${green}⬢${normal} ${background}[ Liberty Prime ${green}ONLINE${normal}${background} - Voice Module ${green}ACTIVE${normal}${background} - Weapons ${red}HOT${normal}${background} ]${normal}\n"
+    return 0
   fi
 }
 
-getNetworkStatus
+export getNetworkStatus
