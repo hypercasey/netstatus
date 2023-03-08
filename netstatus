@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-remoteAddr=$(gsettings get org.gnome.system.proxy.https host)
+remoteAddr=$(gsettings get org.gnome.system.proxy.https host | tr -d "'")
 netName="HyperNet"
 
 red='\e[31m\e[1m'
