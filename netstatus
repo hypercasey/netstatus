@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# [[ -f "bin/netstatus" ]] && source "bin/netstatus" && getNetworkStatus
 remoteAddr=$(gsettings get org.gnome.system.proxy.https host | tr -d "'")
 netName="HyperNet"
 
@@ -9,7 +10,7 @@ background='\e[40m'
 normal='\e[0m'
 statusLength=28
 
-function getNetworkStatus { # Example using devopsctl.service
+function getNetworkStatus {
   [[ 1 == $(ping -c 1 -W 1 "${remoteAddr}" | grep -c '100%') ]] && networkDown=true
   if [[ true == "${networkDown}" ]]; then
     echo -e " ${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: ${netName} is offline ⥈ $(sudo service devopsctl.service status 2>/dev/null | tail -n 1 | tail -c ${statusLength}) ]${normal}\n"
