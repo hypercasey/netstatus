@@ -13,13 +13,13 @@ statusLength=28
 function getNetworkStatus {
   [[ 1 == $(ping -c 1 -W 1 "${remoteAddr}" | grep -c '100%') ]] && networkDown=true
   if [[ true == "${networkDown}" ]]; then
-    echo -e " ${red}⬢${normal} ${background}[ ${red}Warning${normal}${background}: ${netName} is offline ⥈ $(sudo service devopsctl.service status 2>/dev/null | tail -n 1 | tail -c ${statusLength}) ]${normal}\n"
+    echo -e " ${red}⬢${normal} ${background}[[ ${red}WARNO:${normal}${background}: ${netName}: is-with: offline: <=> \"$(sudo service devopsctl.service status 2>/dev/null | tail -n 1 | tail -c ${statusLength})\" ]]${normal} ${red}⬢${normal}\n"
     return 1
   else
     [[ 1 == $(nmap --host-timeout 1 -Pn "${remoteAddr}" -p 8080 2>/dev/null | grep -c 'open') ]] && export proxy_all="${remoteAddr}"
     ( cp -f "${HOME}/src/known_hosts" "${HOME}/.ssh/known_hosts" &>/dev/null )
     ( ssh finger@${remoteAddr} &>/dev/null )
-    echo -e " ${green}⬢${normal} ${background}[ Liberty Prime ${green}ONLINE${normal}${background} - Voice Module ${green}ACTIVE${normal}${background} - Weapons ${red}HOT${normal}${background} ]${normal}\n"
+    echo -e " ${green}⬢${normal} ${background}[[\"Liberty-Prime: ${green}ONLINE${normal}${background}: Voice-Module: ${green}ACTIVE${normal}${background}: Weapons: ${red}HOT${normal}${background}\"]]${normal} ${green}⬢${normal}\n"
     return 0
   fi
 }
